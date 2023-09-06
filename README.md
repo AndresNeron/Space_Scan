@@ -1,6 +1,6 @@
 # Space Scan
 
-Space_Scan is a Bash script designed for inspecting domain names and automating the use of various 
+Space Scan is a Bash program designed for inspecting domain names and automating the use of various 
 cybersecurity scanning tools. This script simplifies the process of scanning domains for security 
 analysis, making it a valuable asset for cybersecurity professionals and enthusiasts.
 
