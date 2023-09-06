@@ -95,9 +95,9 @@ sudo ./Space_Scan.sh -r "-m 80 -i 80" -l domainlist.txt
 To use this script, you need to clone the GitHub repository and execute the script from your terminal. No additional installation is required.
 
 ```bash
-git clone https://github.com/AndresNeron/fetch-images-NASA.git
-cd fetch-images-NASA
-./fetch-images-NASA.sh [options]
+git clone https://github.com/AndresNeron/Space_Scan.git
+cd Space_Scan
+sudo ./Space_Scan.sh [options]
 ```
 
 
