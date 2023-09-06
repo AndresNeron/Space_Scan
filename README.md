@@ -13,6 +13,8 @@ Prior to using this script, ensure you have the following tools installed:
 - nuclei
 - bash
 
+This tool was tested in Kali Linux.
+
 ## Usage 
 Execute the script with administrative privileges using `sudo`:
 
