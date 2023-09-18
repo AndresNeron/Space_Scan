@@ -10,7 +10,6 @@ turquoiseColour="\e[0;36m\033[1m"
 endColour="\033[0m"
 
 export DEBIAN_FRONTEND=noninteractive
-global_time=10
 
 trap ctrl_c INT
 
@@ -22,11 +21,12 @@ function ctrl_c() {
     exit 1
 }
 
+
 function helpPanel(){
 	for i in $(seq 1 65); do echo -ne "${greenColour}-"; done; echo -ne ${endColour}
 	echo -e "\n${purpleColour}This program automates scanning tools usage${endColour}" 
 	for i in $(seq 1 65); do echo -ne "${greenColour}-"; done; echo -ne ${endColour}
-	echo -e "\n${turquoiseColour} [!] Usage:${endColour} ${orangeColour}sudo ./Space_Scan.sh -d [domain] -t [seconds]${endColour}"
+	echo -e "\n${turquoiseColour} [!] Usage:${endColour} ${orangeColour}sudo ./Space_Scan.sh -d [domain]${endColour}"
 	for i in $(seq 1 65); do echo -ne "${greenColour}-"; done; echo -ne ${endColour}
 	echo -e "\n\t${orangeColour}-d\t--domain\t\t${endColour}${turquoiseColour} Receives main domain${endColour}"
 	echo -e "\t${orangeColour}-l\t--list\t\t\t${endColour}${turquoiseColour} Receives list of main domains${endColour}"
@@ -37,7 +37,8 @@ function helpPanel(){
 	echo -e "\t${orangeColour}-i\t--nuclei-analyze\t${endColour}${turquoiseColour} Analyze clean IP's with nuclei${endColour}"
 	echo -e "\t${orangeColour}-a\t--analyze-masscan\t${endColour}${turquoiseColour} Analyze masscan results${endColour}"
 	echo -e "\t${orangeColour}-r\t--recursive\t\t${endColour}${turquoiseColour} Execute recursive commands${endColour}"
-	echo -e "\t${orangeColour}-t\t--time\t\t\t${endColour}${turquoiseColour} Setup time lapse${endColour}"
+	echo -e "\t${orangeColour}-t\t--mode\t\t\t${endColour}${turquoiseColour} Setup mode options: weak, strong${endColour}"
+	echo -e "\t${orangeColour}-w\t--windows\t\t${endColour}${turquoiseColour} Setup how many windows will be opened simultaneously${endColour}"
 	echo -e "\t${orangeColour}-h\t--help\t\t\t${endColour}${turquoiseColour} Show this help message${endColour}"
 	echo -e "\n\t${orangeColour}Examples:\t${endColour}"
 	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -d${endColour} ${greenColour}example.com${endColour}${orangeColour} -s${endColour} 1 -o"
@@ -48,6 +49,7 @@ function helpPanel(){
 	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -r${endColour} ${greenColour}\"-s 1 -o -m all\"${endColour}${orangeColour} -l${endColour} domainlist.txt"
 	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -r${endColour} ${greenColour}\"-m 80 -n 80\"${endColour}${orangeColour} -l${endColour} domainlist.txt"
 	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -r${endColour} ${greenColour}\"-m 80 -i 80\"${endColour}${orangeColour} -l${endColour} domainlist.txt"
+	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -d${endColour} ${greenColour}example.com${endColour}${orangeColour} -w${endColour} 4${orangeColour} -t${endColour} weak${orangeColour} -i${endColour} 80"
 
 	exit 1
 }
@@ -77,6 +79,15 @@ function change_Path() {
 	fi
 }
 
+function mode() {
+	temp_mode=$1
+}
+
+function windows() {
+	if [ "$max_xterms" -gt 8 ]; then
+		echo "The total number of windows cannot be greater than 8"
+	fi
+}
 
 function subfinder_fetch() {
 	enable_subfinder=$1
@@ -209,9 +220,6 @@ function nmap_analyze(){
 
 }
 
-running_xterms=0
-xterm_counter=0
-max_xterms=9
 
 function nuclei_analyze(){
 	port=$1
@@ -244,10 +252,22 @@ function nuclei_analyze(){
 	private_counter=1
 
 	if [ "$port" = "80" ]; then
-		if [ ! -e "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt" ]; then
-			nuclei -tl -s high,critical -pt http 2>/dev/null > "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt"
+
+		if [ "$global_mode" == "strong" ]; then
+			echo "High and Critical templates will be used."
+			if [ ! -e "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt" ]; then
+				nuclei -tl -s high,critical -pt http 2>/dev/null > "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt"
+			fi
+		elif [ "$global_mode" == "weak" ]; then
+			echo -e "\nLoading ${turquoiseColour}Info, Low, Medium${endColour} templates to use it."
+			#if [ ! -e "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt" ]; then
+				nuclei -tl -s info,low,medium -pt http 2>/dev/null > "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt"
+			#fi
+		else
+			echo "Select a valid option for mode."
 		fi
 
+			
 		while read ip; do
 			if [ ! -d "$default_path2/$domain_name/nuclei/$port/$ip" ]; then
 				mkdir -p "$default_path2/$domain_name/nuclei/$port/$ip"
@@ -297,7 +317,6 @@ function nuclei_analyze(){
 
 				# Start new xterm windows if someones already finished
 				if [ "$running_xterms" -ge "$max_xterms" ]; then
-					#echo "xterms: $running_xterms	max_xterms: $max_xterms		Flag3"
 					running_xterms=0
 				fi
 
@@ -311,11 +330,8 @@ function nuclei_analyze(){
 				x_offset=$((x_offset - variance))
 				y_offset=$((cocient * window_height * height_const))
 
-				#xterm -hold -geometry ${window_width}x${window_height}+${x_offset}+${y_offset} -e "bash $default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh" &
-				#xterm -hold -geometry ${window_width}x${window_height}+${x_offset}+${y_offset} -e "echo \"$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh\"" &
-				
 				#echo "max_xterms: $max_xterms		xterm_counter=$xterm_counter"
-				if [[ $((max_xterms - xterm_counter)) -ge 2 ]]; then
+				if [[ $((max_xterms - xterm_counter)) -ge 1 ]]; then
 					xterm -geometry ${window_width}x${window_height}+${x_offset}+${y_offset} -e "bash $default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh" &
 					#xterm  -geometry ${window_width}x${window_height}+${x_offset}+${y_offset} -e 'for i in {1..10}; do echo "$i"; sleep 1; done' &
 					xterm_pids+=($!)
@@ -375,6 +391,10 @@ recursive_counter=0
 lines_global=3
 x_offset=0
 y_offset=0
+global_mode=0
+max_xterms=$((4+1))
+running_xterms=0
+xterm_counter=0
 
 function iterate_domains() {
 	domain_list=$1
@@ -435,7 +455,7 @@ function recursive_command() {
 xterm_pids=()
 counter=0
 
-ARGS=$(getopt -o d:l:s:ot:m:n:i:a:r:h --long domain:,list:,subfinder:,dns-resolution,time:,masscan-analyze:,nmap-analyze,nuclei-analyze,analyze-masscan,recursive:,help -n "$0" -- "$@")
+ARGS=$(getopt -o d:l:s:ot:w:m:n:i:a:r:h --long domain:,list:,subfinder:,dns-resolution,mode:,windows:,masscan-analyze:,nmap-analyze,nuclei-analyze,analyze-masscan,recursive:,help -n "$0" -- "$@")
 eval set -- "$ARGS"
 
 while true; do
@@ -462,8 +482,15 @@ while true; do
             counter=$((counter + 1))
             shift
             ;;
-        -t|--time)
-            global_time="$2"
+        -t|--mode)
+            global_mode="$2"
+			mode "$global_mode" 
+            counter=$((counter + 1))
+            shift 2
+            ;;
+        -w|--windows)
+            max_xterms="$2"
+			windows "$max_xterms" 
             counter=$((counter + 1))
             shift 2
             ;;

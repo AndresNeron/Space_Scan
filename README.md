@@ -4,18 +4,8 @@ Space Scan is a Bash program designed for inspecting domain names and automating
 cybersecurity scanning tools. This script simplifies the process of scanning domains for security 
 analysis, making it a valuable asset for cybersecurity professionals and enthusiasts.
 
-## Table of Contents
 
-- [Prerequisites](#introduction)
-- [Usage](#features)
-- [Options](#usage)
-- [Examples](#examples)
-- [Installation](#installation)
-- [Note](#note)
-- [License](#license)
-
-
-## <a name="introduction"></a>Prerequisites
+## Prerequisites
 Prior to using this script, ensure you have the following tools installed:
 - subfinder
 - masscan
@@ -23,16 +13,14 @@ Prior to using this script, ensure you have the following tools installed:
 - nuclei
 - bash
 
-This tool was tested in Kali Linux.
-
-## <a name="usage"></a>Usage
+## Usage 
 Execute the script with administrative privileges using `sudo`:
 
 ```bash
 sudo ./Space_Scan.sh [options]
 ```
 
-## <a name="options"></a>Options
+## Options
 Space Scan provides several options to tailor your scanning process:
 
 -    -d, --domain: Specify the main domain to scan.
@@ -48,7 +36,7 @@ Space Scan provides several options to tailor your scanning process:
 -    -h, --help: Display this help message.
 
 
-## <a name="examples"></a>Examples
+## Examples
 Here are some usage examples for Space_Scan:
 
 - Resolve the subdomains of a main domain and do DNS resolution of each subdomain.
@@ -91,22 +79,12 @@ sudo ./Space_Scan.sh -r "-m 80 -n 80" -l domainlist.txt
 sudo ./Space_Scan.sh -r "-m 80 -i 80" -l domainlist.txt
 ```
 
-## <a name="installation"></a>Installation
-To use this script, you need to clone the GitHub repository and execute the script from your terminal. No additional installation is required.
-
-```bash
-git clone https://github.com/AndresNeron/Space_Scan.git
-cd Space_Scan
-sudo ./Space_Scan.sh [options]
-```
-
-
-## <a name="note"></a>Note
+## Note
 
 Some commands are needed before executing other commands. Per example, is necessary to run subfinder, dns resolution, 
 masscan, nmap and nuclei, in that order.
 
-## <a name="license"></a>Licence
+## License
 
 This project is licensed under the [MIT License](LICENSE).
 
