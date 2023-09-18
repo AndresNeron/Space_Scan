@@ -258,7 +258,7 @@ function nuclei_analyze(){
 			nuclei -tl -s info,low -pt http 2>/dev/null > "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt"
 
 		elif [ "$global_mode" == "medium" ]; then
-			echo -e "\nLoading ${turquoiseColour}Info, Low, Medium${endColour} templates to use it."
+			echo -e "\nLoading ${turquoiseColour}Medium${endColour} templates to use it."
 			nuclei -tl -s medium -pt http 2>/dev/null > "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt"
 
 		elif [ "$global_mode" == "strong" ]; then
