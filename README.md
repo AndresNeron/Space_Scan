@@ -90,7 +90,7 @@ sudo ./Space_Scan.sh -r "-m 80 -n 80" -l domainlist.txt
 ```bash
 sudo ./Space_Scan.sh -r "-m 80 -i 80" -l domainlist.txt
 ```
-- Analyze all the IP's with nuclei (speed of four IP's at the same time).
+- Analyze all the IP's with weak nuclei templates (speed of four IP's at the same time).
 ```bash
 	sudo ./Space_Scan.sh -d example.com -w 4 -t weak -i 80"
 ```
