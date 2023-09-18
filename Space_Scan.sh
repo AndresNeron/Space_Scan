@@ -37,7 +37,7 @@ function helpPanel(){
 	echo -e "\t${orangeColour}-i\t--nuclei-analyze\t${endColour}${turquoiseColour} Analyze clean IP's with nuclei${endColour}"
 	echo -e "\t${orangeColour}-a\t--analyze-masscan\t${endColour}${turquoiseColour} Analyze masscan results${endColour}"
 	echo -e "\t${orangeColour}-r\t--recursive\t\t${endColour}${turquoiseColour} Execute recursive commands${endColour}"
-	echo -e "\t${orangeColour}-t\t--mode\t\t\t${endColour}${turquoiseColour} Setup mode options: [weak, medium, strong]${endColour}"
+	echo -e "\t${orangeColour}-t\t--mode\t\t\t${endColour}${turquoiseColour} Setup nuclei mode options: [weak, medium, strong]${endColour}"
 	echo -e "\t${orangeColour}-w\t--windows\t\t${endColour}${turquoiseColour} Setup how many windows will be opened simultaneously${endColour}"
 	echo -e "\t${orangeColour}-h\t--help\t\t\t${endColour}${turquoiseColour} Show this help message${endColour}"
 	echo -e "\n\t${orangeColour}Examples:\t${endColour}"
