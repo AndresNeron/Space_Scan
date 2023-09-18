@@ -253,17 +253,17 @@ function nuclei_analyze(){
 
 	if [ "$port" = "80" ]; then
 
-		if [ "$global_mode" == "strong" ]; then
-			echo -e "\nLoading ${turquoiseColour}High, Critical${endColour} templates to use it."
-			nuclei -tl -s high,critical -pt http 2>/dev/null > "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt"
-
-		elif [ "$global_mode" == "weak" ]; then
+		if [ "$global_mode" == "weak" ]; then
 			echo -e "\nLoading ${turquoiseColour}Info, Low${endColour} templates to use it."
 			nuclei -tl -s info,low -pt http 2>/dev/null > "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt"
 
 		elif [ "$global_mode" == "medium" ]; then
 			echo -e "\nLoading ${turquoiseColour}Info, Low, Medium${endColour} templates to use it."
 			nuclei -tl -s medium -pt http 2>/dev/null > "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt"
+
+		elif [ "$global_mode" == "strong" ]; then
+			echo -e "\nLoading ${turquoiseColour}High, Critical${endColour} templates to use it."
+			nuclei -tl -s high,critical -pt http 2>/dev/null > "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt"
 
 		else
 			echo "Select a valid option for mode."
