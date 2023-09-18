@@ -33,7 +33,19 @@ Space Scan provides several options to tailor your scanning process:
 -    -a, --analyze-masscan: Analyze Masscan results.
 -    -r, --recursive: Execute recursive commands within double quotes (e.g., "-s 1 -o").
 -    -t, --time: Set up a time lapse for the scanning process.
+-    -t, --mode: Setup mode options: [weak, medium, strong]"
+-    -w, --windows: Setup how many windows will be opened simultaneously"
 -    -h, --help: Display this help message.
+
+	sudo ./Space_Scan.sh${endColour}${orangeColour} -d${endColour} ${greenColour}example.com${endColour}${orangeColour} -s${endColour} 1 -o"
+	sudo ./Space_Scan.sh${endColour}${orangeColour} -d${endColour} ${greenColour}example.com${endColour}${orangeColour} -m${endColour} all"
+	sudo ./Space_Scan.sh${endColour}${orangeColour} -d${endColour} ${greenColour}example.com${endColour}${orangeColour} -a${endColour} all"
+	sudo ./Space_Scan.sh${endColour}${orangeColour} -r${endColour} ${greenColour}\"-s 1 -o\"${endColour}${orangeColour} -l${endColour} domainlist.txt"
+	sudo ./Space_Scan.sh${endColour}${orangeColour} -r${endColour} ${greenColour}\"-m all\"${endColour}${orangeColour} -l${endColour} domainlist.txt"
+	sudo ./Space_Scan.sh${endColour}${orangeColour} -r${endColour} ${greenColour}\"-s 1 -o -m all\"${endColour}${orangeColour} -l${endColour} domainlist.txt"
+	sudo ./Space_Scan.sh${endColour}${orangeColour} -r${endColour} ${greenColour}\"-m 80 -n 80\"${endColour}${orangeColour} -l${endColour} domainlist.txt"
+	sudo ./Space_Scan.sh${endColour}${orangeColour} -r${endColour} ${greenColour}\"-m 80 -i 80\"${endColour}${orangeColour} -l${endColour} domainlist.txt"
+	sudo ./Space_Scan.sh${endColour}${orangeColour} -d${endColour} ${greenColour}example.com${endColour}${orangeColour} -w${endColour} 4${orangeColour} -t${endColour} weak${orangeColour} -i${endColour} 80"
 
 
 ## Examples
@@ -77,6 +89,10 @@ sudo ./Space_Scan.sh -r "-m 80 -n 80" -l domainlist.txt
 - Run masscan and nuclei templates in a certain port in that order.
 ```bash
 sudo ./Space_Scan.sh -r "-m 80 -i 80" -l domainlist.txt
+```
+- Analyze all the IP's with nuclei (speed of four IP's at the same time).
+```bash
+	sudo ./Space_Scan.sh -d example.com -w 4 -t weak -i 80"
 ```
 
 ## Note
