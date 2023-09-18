@@ -33,8 +33,8 @@ Space Scan provides several options to tailor your scanning process:
 -    -a, --analyze-masscan: Analyze Masscan results.
 -    -r, --recursive: Execute recursive commands within double quotes (e.g., "-s 1 -o").
 -    -t, --time: Set up a time lapse for the scanning process.
--    -t, --mode: Setup mode options: [weak, medium, strong]"
--    -w, --windows: Setup how many windows will be opened simultaneously"
+-    -t, --mode: Setup mode options: [weak, medium, strong]
+-    -w, --windows: Setup how many windows will be opened simultaneously
 -    -h, --help: Display this help message.
 
 	sudo ./Space_Scan.sh${endColour}${orangeColour} -d${endColour} ${greenColour}example.com${endColour}${orangeColour} -s${endColour} 1 -o"
