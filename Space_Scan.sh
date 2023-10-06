@@ -44,9 +44,14 @@ function helpPanel(){
 	echo -e "\t${orangeColour}-i\t--nuclei-analyze\t${endColour}${turquoiseColour} Analyze clean IP's with nuclei${endColour}"
 	echo -e "\t${orangeColour}-a\t--analyze-masscan\t${endColour}${turquoiseColour} Analyze masscan results${endColour}"
 	echo -e "\t${orangeColour}-r\t--recursive\t\t${endColour}${turquoiseColour} Execute recursive commands${endColour}"
-	echo -e "\t${orangeColour}-t\t--mode\t\t\t${endColour}${turquoiseColour} Setup nuclei mode options: [weak, medium, strong]${endColour}"
-	echo -e "\t${orangeColour}-w\t--windows\t\t${endColour}${turquoiseColour} Setup how many windows will be opened simultaneously${endColour}"
-	echo -e "\t${orangeColour}-h\t--help\t\t\t${endColour}${turquoiseColour} Show this help message${endColour}"
+	echo -e "\t${orangeColour}-t\t--mode\t\t\t${endColour}${turquoiseColour} Setup nuclei mode options: [weak, weak-fast, medium, strong, latest]${endColour}"
+	echo -e "\t${turquoiseColour}\tweak\t\t\t${endColour}${turquoiseColour} Use the weak severity templates from nuclei ${endColour}"
+	echo -e "\t${turquoiseColour}\tweak-fast\t\t\t${endColour}${turquoiseColour} Use the most common weak severity templates from nuclei ${endColour}"
+	echo -e "\t${turquoiseColour}\tmedium\t\t\t${endColour}${turquoiseColour} Use the medium severity templates from nuclei ${endColour}"
+	echo -e "\t${turquoiseColour}\tstrong\t\t\t${endColour}${turquoiseColour} Use the high and critical severity templates from nuclei ${endColour}"
+	echo -e "\t${turquoiseColour}\tlatest\t\t\t${endColour}${turquoiseColour} Use the latest templates from nuclei ${endColour}"
+	echo -e "\t${orangeColour}-w\t--windows\t\t${endColour}${turquoiseColour} Setup how many windows will be opened simultaneously${endColour}${turquoiseColour}  ${endColour}"
+	echo -e "\t${orangeColour}-h\t--help\t\t\t${endColour}${turquoiseColour} Show this help message${endColour}${turquoiseColour}  ${endColour}"
 	echo -e "\n\t${orangeColour}Examples:\t${endColour}"
 	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -d${endColour} ${greenColour}example.com${endColour}${orangeColour} -s${endColour} 1 -o"
 	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -d${endColour} ${greenColour}example.com${endColour}${orangeColour} -m${endColour} all"
@@ -62,9 +67,24 @@ function helpPanel(){
 	exit 1
 }
 
+
+# Get the username of the normal user or the sudo user if empty
+if [ -n "$SUDO_USER" ]; then
+    username="$SUDO_USER"
+else
+    username="$USER"
+fi
+
+# Check if the username is empty (indicating that sudo was not used)
+if [ -z "$username" ]; then
+    echo "Unable to determine the username. Please run this script with sudo."
+    exit 1
+fi
+
 # This is the default path where the images will be saved.
-default_path="home/grimaldi/Bash/Space_Scan"
+default_path="home/$username/Bash/Space_Scan"
 cd /
+
 if [ ! -d "$default_path" ]; then
 	mkdir -p $default_path
 fi
@@ -106,7 +126,9 @@ function subfinder_fetch() {
 			echo -e "Successful directory creation at $default_path2/$domain_name"
 		fi
 		subfinder -d "$domain_name" | tee "$default_path2/$domain_name/$domain_name.txt"
-		echo "Subdomains fetched -> /$default_path2/$domain_name/$domain_name.txt"
+		echo
+		echo -e "${turquoiseColour}Subdomains fetched -> /$default_path2/$domain_name/$domain_name.txt${endColour}"
+		echo
 	fi
 }
 
@@ -277,7 +299,7 @@ for ip in \$(cat "/${chunk_file}_directory/${chunk_file_basename}"); do
 	echo -e "\${turquoiseColour}Scanning\${endColour}\${orangeColour} \$ip\${endColour}\${turquoiseColour} with masscan ...\${endColour}"
 	masscan -p"$port" "\$ip" -oG "/$default_path2/$domain_name/masscan/$port/${domain_name}_\${ip}_scan.txt" > /dev/null 2>&1
 
-	if echo  "/$default_path2/$domain_name/masscan/$port/${domain_name}_\${ip}_scan.txt"| grep -q "open"; then
+	if echo  "/$default_path2/$domain_name/masscan/$port/${domain_name}_\${ip}_scan.txt" | grep -q "open"; then
 		echo -e "\${orangeColour}Port $port \${endColour}\${orangeColour}found for \${endColour}\${orangeColour}\$ip\${endColour}"
 		echo
 		for i in \$(seq 1 40); do echo -ne "\${greenColour}-"; done; echo -ne \${endColour}
@@ -320,29 +342,6 @@ EOF
 				wait "${xterm_pids[@]}"
 	fi
 
-# ---------------------------------- This block is before the parallel computing changes ------------------------------------------------------------------
-#	if [ "$port" == "all" ]; then
-#		shuf "$default_path2/$domain_name/${domain_name}_IPs_clean_sorted.txt" | head -n 3 | while read ip; do
-#			echo -e "\n${turquoiseColour}Scanning${endColour}${redColour} $ip${endColour}${turquoiseColour} with masscan${endColour}"
-#			#masscan -p1-65535 "$ip" -oG "$default_path2/$domain_name/masscan/$port/${domain_name}_${ip}_scan.txt"
-#			echo -e "masscan -p1-65535 \"$ip\" -oG \"$default_path2/$domain_name/masscan/$port/${domain_name}_${ip}_scan.txt\"" >> "$default_path2/$domain_name/masscan/$port/$ip/masscan_${ip}.sh"
-#		done
-#	else
-#		while read ip; do
-#			echo -e "\n${turquoiseColour}Scanning${endColour}${redColour} $ip${endColour}${turquoiseColour} with masscan${endColour}"
-#			echo -e "masscan -p\"$port\" \"$ip\" -oG \"$default_path2/$domain_name/masscan/$port/${domain_name}_${ip}_scan.txt\"" >> "$default_path2/$domain_name/masscan/$port/$ip/masscan_${ip}.sh" 
-#
-#			if echo  "$default_path2/$domain_name/masscan/$port/${domain_name}_${ip}_scan.txt"| grep -q "open"; then
-#				echo "Port $port found for $ip"
-#			else
-#				echo "Port $port not found for $ip"
-#				if [ ! -s "$default_path2/$domain_name/masscan/$port/${domain_name}_${ip}_scan.txt" ]; then
-#					rm "$default_path2/$domain_name/masscan/$port/${domain_name}_${ip}_scan.txt"
-#				fi
-#			fi
-#		done < "$default_path2/$domain_name/${domain_name}_IPs_clean_sorted.txt"
-#	fi
-#
 
 
 }
@@ -412,16 +411,17 @@ function nmap_analyze(){
 
 }
 
+nuclei_templates="default"
 
 function nuclei_analyze(){
+	start_cronometer
+
 	port=$1
 	if [ ! -d "$default_path2/$domain_name/nuclei" ]; then
 		mkdir -p "$default_path2/$domain_name/nuclei"
 	fi
 
-	if [ ! -d "$default_path2/$domain_name/nuclei/$port" ]; then
-		mkdir -p "$default_path2/$domain_name/nuclei/$port"
-	fi
+	mkdir -p "$default_path/templates/$port"
 	
 	if [ ! -e "$default_path2/$domain_name/masscan/$port/${domain_name}_${port}.txt" ]; then
 		# Retrieve IP list of open ports from masscan results
@@ -439,15 +439,28 @@ function nuclei_analyze(){
 
 		if [ "$global_mode" == "weak" ]; then
 			echo -e "\nLoading ${turquoiseColour}Info, Low${endColour} templates to use it."
-			nuclei -tl -s info,low -pt http 2>/dev/null > "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt"
+			nuclei_templates="$default_path/templates/$port/nuclei-templates.txt"
+			nuclei -tl -s info,low -pt http 2>/dev/null > "$nuclei_templates"
+
+		elif [ "$global_mode" == "weak-fast" ]; then
+			echo -e "\nLoading ${turquoiseColour}Weak-Fast${endColour} templates to use it."
+			nuclei_templates="$default_path/templates/$port/nuclei-templates-fast-weak.txt"
+
 
 		elif [ "$global_mode" == "medium" ]; then
 			echo -e "\nLoading ${turquoiseColour}Medium${endColour} templates to use it."
-			nuclei -tl -s medium -pt http 2>/dev/null > "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt"
+			nuclei_templates="$default_path/templates/$port/nuclei-templates.txt"
+			nuclei -tl -s medium -pt http 2>/dev/null > "$nuclei_templates"
 
 		elif [ "$global_mode" == "strong" ]; then
 			echo -e "\nLoading ${turquoiseColour}High, Critical${endColour} templates to use it."
-			nuclei -tl -s high,critical -pt http 2>/dev/null > "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt"
+			nuclei_templates="$default_path/templates/$port/nuclei-templates.txt"
+			nuclei -tl -s high,critical -pt http 2>/dev/null > "$nuclei_templates"
+
+		elif [ "$global_mode" == "latest" ]; then
+			echo -e "\nLoading ${turquoiseColour}Lastest${endColour} templates to use it."
+			nuclei_templates="$default_path/templates/$port/nuclei-templates.txt"
+			nuclei -tl -nt -pt http 2>/dev/null > "$nuclei_templates"
 
 		else
 			echo "Select a valid option for mode."
@@ -468,22 +481,23 @@ function nuclei_analyze(){
 			touch "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
 			chmod +x "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
 
-			echo "#!/bin/bash" >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
-			echo "orangeColour=\"\e[0;32m\033[1m\"" >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh" 
-			echo "greenColour=\"\033[0m\e[0m\"" >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
-			echo "redColour=\"\e[0;31m\033[1m\"" >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
-			echo "purpleColour=\"\e[0;34m\033[1m\"" >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
-			echo "grayColour=\"\e[0;37m\033[1m\"" >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
-			echo "turquoiseColour=\"\e[0;36m\033[1m\"" >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
-			echo "endColour=\"\033[0m\"" >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
-			echo "counter=0" >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
+			echo "#!/bin/bash" 							>> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
+			echo "orangeColour=\"\e[0;32m\033[1m\"" 	>> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh" 
+			echo "greenColour=\"\033[0m\e[0m\"" 		>> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
+			echo "redColour=\"\e[0;31m\033[1m\"" 		>> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
+			echo "purpleColour=\"\e[0;34m\033[1m\"" 	>> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
+			echo "grayColour=\"\e[0;37m\033[1m\"" 		>> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
+			echo "turquoiseColour=\"\e[0;36m\033[1m\"" 	>> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
+			echo "endColour=\"\033[0m\"" 				>> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
+			echo "counter=0" 							>> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
+
 
 			while read subdomain; do
 				while read template; do
 					echo -e "\nlet counter+=1" >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
 					echo -e 'echo -e "\n${greenColour}Running $counter attempt:${endColour}"' >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
-					echo -e "echo -e \"\${turquoiseColour}sudo nuclei -t /home/grimaldi/.local/nuclei-templates/$template -target $ip $subdomain 2>/dev/null | sudo tee /$default_path2/$domain_name/nuclei/$port/$ip/${template##*/}_${subdomain}_${ip}.txt\${endColour}\"\n" >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
-					echo -e "sudo nuclei -t /home/grimaldi/.local/nuclei-templates/$template -target $ip $subdomain 2>/dev/null | sudo tee /$default_path2/$domain_name/nuclei/$port/$ip/${template##*/}_${subdomain}_${ip}.txt" >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
+					echo -e "echo -e \"\${turquoiseColour}sudo nuclei -t /home/$username/.local/nuclei-templates/$template -target $ip $subdomain 2>/dev/null | sudo tee /$default_path2/$domain_name/nuclei/$port/$ip/${template##*/}_${subdomain}_${ip}.txt\${endColour}\"\n" >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
+					echo -e "sudo nuclei -t /home/$username/.local/nuclei-templates/$template -target $ip $subdomain 2>/dev/null | sudo tee /$default_path2/$domain_name/nuclei/$port/$ip/${template##*/}_${subdomain}_${ip}.txt" >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
 					
 					echo -e "		if [ -e \"/$default_path2/$domain_name/nuclei/$port/$ip/${template##*/}_${subdomain}_${ip}.txt\" ]; then" >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
 					echo -e "			if [ ! -s \"/$default_path2/$domain_name/nuclei/$port/$ip/${template##*/}_${subdomain}_${ip}.txt\" ]; then" >> "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.sh"
@@ -498,7 +512,8 @@ function nuclei_analyze(){
 							rm "/$default_path2/$domain_name/nuclei/$port/$ip/${template##*/}.${subdomain}_${ip}.txt"
 						fi
 					fi
-				done < "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt"
+				done < "$nuclei_templates"
+
 		
 
 				# Start new xterm windows if someones already finished
@@ -555,7 +570,7 @@ function nuclei_analyze(){
 							echo "Successfully deleted /$default_path2/$domain_name/nuclei/$port/$ip/${template##*/}_${subdomain}_${ip}.txt"
 						fi
 					fi
-				done < "$default_path2/$domain_name/nuclei/$port/nuclei-templates.txt"
+				done < "$nuclei_templates"
 
 
 			done < "$default_path2/$domain_name/nuclei/$port/$ip/subdomains_${ip}.txt"
@@ -564,11 +579,29 @@ function nuclei_analyze(){
 		done < "$default_path2/$domain_name/masscan/$port/${domain_name}_${port}.txt"
 	
 		date=$(date)
-		echo "This IP was scanned with the nuclei-templates.txt at: $date" > "$default_path2/$domain_name/nuclei/$port/$ip/Finished.txt"
+		echo "This IP was scanned with the $nuclei_templates at: $date" > "$default_path2/$domain_name/nuclei/$port/$ip/Finished.txt"
 
 	fi
+
+	stop_cronometer
 }
 
+start_cronometer() {
+    start_time=$(date +%s.%N)
+}
+
+stop_cronometer() {
+    stop_time=$(date +%s.%N)
+
+    # Calculate the elapsed time in seconds with nanosecond precision
+    elapsed_time=$(echo "$stop_time - $start_time" | bc)
+
+    # Format the elapsed time for display
+    formatted_time=$(printf "%.2f" "$elapsed_time")
+
+    # Print the elapsed time
+    echo "Elapsed time: ${formatted_time} seconds"
+}
 
 
 # Global variables
