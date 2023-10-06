@@ -31,7 +31,8 @@ function ctrl_c() {
 
 function helpPanel(){
 	for i in $(seq 1 65); do echo -ne "${greenColour}-"; done; echo -ne ${endColour}
-	echo -e "\n${purpleColour}This program automates scanning tools usage${endColour}" 
+	echo -e "\n${purpleColour}This program automates scanning tools usage for Bug Hunting${endColour}" 
+	echo -e "${purpleColour}against domain names.${endColour}" 
 	for i in $(seq 1 65); do echo -ne "${greenColour}-"; done; echo -ne ${endColour}
 	echo -e "\n${turquoiseColour} [!] Usage:${endColour} ${orangeColour}sudo ./Space_Scan.sh -d [domain]${endColour}"
 	for i in $(seq 1 65); do echo -ne "${greenColour}-"; done; echo -ne ${endColour}
@@ -44,21 +45,21 @@ function helpPanel(){
 	echo -e "\t${orangeColour}-i\t--nuclei-analyze\t${endColour}${turquoiseColour} Analyze clean IP's with nuclei${endColour}"
 	echo -e "\t${orangeColour}-a\t--analyze-masscan\t${endColour}${turquoiseColour} Analyze masscan results${endColour}"
 	echo -e "\t${orangeColour}-r\t--recursive\t\t${endColour}${turquoiseColour} Execute recursive commands${endColour}"
-	echo -e "\t${orangeColour}-t\t--mode\t\t\t${endColour}${turquoiseColour} Setup nuclei mode options: [weak, weak-fast, medium, strong, latest]${endColour}"
-	echo -e "\t${turquoiseColour}\tweak\t\t\t${endColour}${turquoiseColour} Use the weak severity templates from nuclei ${endColour}"
-	echo -e "\t${turquoiseColour}\tweak-fast\t\t\t${endColour}${turquoiseColour} Use the most common weak severity templates from nuclei ${endColour}"
-	echo -e "\t${turquoiseColour}\tmedium\t\t\t${endColour}${turquoiseColour} Use the medium severity templates from nuclei ${endColour}"
-	echo -e "\t${turquoiseColour}\tstrong\t\t\t${endColour}${turquoiseColour} Use the high and critical severity templates from nuclei ${endColour}"
-	echo -e "\t${turquoiseColour}\tlatest\t\t\t${endColour}${turquoiseColour} Use the latest templates from nuclei ${endColour}"
+	echo -e "\t${orangeColour}-t\t--nuclei-mode\t\t${endColour}${turquoiseColour} Setup nuclei mode options: [weak, weak-fast, medium, strong, latest]${endColour}"
+	echo -e "\t${grayColour}\t\tweak\t\t${endColour}${turquoiseColour} Use the weak severity templates from nuclei ${endColour}"
+	echo -e "\t${grayColour}\t\tweak-fast\t${endColour}${turquoiseColour} Use the most common weak severity templates from nuclei ${endColour}"
+	echo -e "\t${grayColour}\t\tmedium\t\t${endColour}${turquoiseColour} Use the medium severity templates from nuclei ${endColour}"
+	echo -e "\t${grayColour}\t\tstrong\t\t${endColour}${turquoiseColour} Use the high and critical severity templates from nuclei ${endColour}"
+	echo -e "\t${grayColour}\t\tlatest\t\t${endColour}${turquoiseColour} Use the latest templates from nuclei ${endColour}"
 	echo -e "\t${orangeColour}-w\t--windows\t\t${endColour}${turquoiseColour} Setup how many windows will be opened simultaneously${endColour}${turquoiseColour}  ${endColour}"
 	echo -e "\t${orangeColour}-h\t--help\t\t\t${endColour}${turquoiseColour} Show this help message${endColour}${turquoiseColour}  ${endColour}"
 	echo -e "\n\t${orangeColour}Examples:\t${endColour}"
-	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -d${endColour} ${greenColour}example.com${endColour}${orangeColour} -s${endColour} 1 -o"
+	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -d${endColour} ${greenColour}example.com${endColour}${orangeColour} -s -o${endColour}"
 	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -d${endColour} ${greenColour}example.com${endColour}${orangeColour} -m${endColour} all"
 	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -d${endColour} ${greenColour}example.com${endColour}${orangeColour} -a${endColour} all"
-	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -r${endColour} ${greenColour}\"-s 1 -o\"${endColour}${orangeColour} -l${endColour} domainlist.txt"
+	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -r${endColour} ${greenColour}\"-s -o\"${endColour}${orangeColour} -l${endColour} domainlist.txt"
 	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -r${endColour} ${greenColour}\"-m all\"${endColour}${orangeColour} -l${endColour} domainlist.txt"
-	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -r${endColour} ${greenColour}\"-s 1 -o -m all\"${endColour}${orangeColour} -l${endColour} domainlist.txt"
+	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -r${endColour} ${greenColour}\"-s -o -m all\"${endColour}${orangeColour} -l${endColour} domainlist.txt"
 	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -r${endColour} ${greenColour}\"-m 80 -n 80\"${endColour}${orangeColour} -l${endColour} domainlist.txt"
 	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -r${endColour} ${greenColour}\"-m 80 -i 80\"${endColour}${orangeColour} -l${endColour} domainlist.txt"
 	echo -e "\t${turquoiseColour} sudo ./Space_Scan.sh${endColour}${orangeColour} -d${endColour} ${greenColour}example.com${endColour}${orangeColour} -w${endColour} 4${orangeColour} -m${endColour} 80"
@@ -119,17 +120,13 @@ function windows() {
 }
 
 function subfinder_fetch() {
-	enable_subfinder=$1
-	if [ "$enable_subfinder" = "1" ]; then
-		if [ ! -d "$default_path2/$domain_name" ]; then
-			mkdir -p "$default_path2/$domain_name"
-			echo -e "Successful directory creation at $default_path2/$domain_name"
-		fi
-		subfinder -d "$domain_name" | tee "$default_path2/$domain_name/$domain_name.txt"
-		echo
-		echo -e "${turquoiseColour}Subdomains fetched -> /$default_path2/$domain_name/$domain_name.txt${endColour}"
-		echo
+	if [ ! -d "$default_path2/$domain_name" ]; then
+		mkdir -p "$default_path2/$domain_name"
+		echo -e "Successful directory creation at $default_path2/$domain_name"
 	fi
+	subfinder -d "$domain_name" | tee "$default_path2/$domain_name/$domain_name.txt"
+	echo
+	echo -e "${turquoiseColour}Subdomains fetched -> /$default_path2/$domain_name/$domain_name.txt${endColour}"
 }
 
 function dns_resolution() {
@@ -463,7 +460,7 @@ function nuclei_analyze(){
 			nuclei -tl -nt -pt http 2>/dev/null > "$nuclei_templates"
 
 		else
-			echo "Select a valid option for mode."
+			echo "Select a valid option for mode for nuclei."
 		fi
 
 			
@@ -683,7 +680,7 @@ function recursive_command() {
 xterm_pids=()
 counter=0
 
-ARGS=$(getopt -o d:l:s:ot:w:m:n:i:a:r:h --long domain:,list:,subfinder:,dns-resolution,mode:,windows:,masscan-analyze:,nmap-analyze,nuclei-analyze,analyze-masscan,recursive:,help -n "$0" -- "$@")
+ARGS=$(getopt -o d:l:sot:w:m:n:i:a:r:h --long domain:,list:,subfinder,dns-resolution,nuclei-mode:,windows:,masscan-analyze:,nmap-analyze,nuclei-analyze,analyze-masscan,recursive:,help -n "$0" -- "$@")
 eval set -- "$ARGS"
 
 while true; do
@@ -700,8 +697,7 @@ while true; do
             shift 2
             ;;
         -s|--subfinder)
-            enable_subfinder="$2"
-            subfinder_fetch "$enable_subfinder"
+            subfinder_fetch 
             counter=$((counter + 1))
             shift 2
             ;;
@@ -710,7 +706,7 @@ while true; do
             counter=$((counter + 1))
             shift
             ;;
-        -t|--mode)
+        -t|--nuclei-mode)
             global_mode="$2"
 			mode "$global_mode" 
             counter=$((counter + 1))

@@ -43,7 +43,7 @@ Here are some usage examples for Space_Scan:
 
 - Resolve the subdomains of a main domain and do DNS resolution of each subdomain.
 ```bash
-sudo ./Space_Scan.sh -d example.com -s 1 -o
+sudo ./Space_Scan.sh -d example.com -s-o
 ```
 
 - Scan all the open ports of a few subdomains with masscan.
@@ -58,7 +58,7 @@ sudo ./Space_Scan.sh -d example.com -a all
 
 - Retrieve the subdomains and resolve DNS resolution of a list of main domains.
 ```bash
-sudo ./Space_Scan.sh -r "-s 1 -o" -l domainlist.txt
+sudo ./Space_Scan.sh -r "-s -o" -l domainlist.txt
 ```
 
 - Scan all the open ports of a list of main domains using masscan.
@@ -68,7 +68,7 @@ sudo ./Space_Scan.sh -r "-m all" -l domainlist.txt
 
 - Run subfinder, dns resolution and masscan in a single threat.
 ```bash
-sudo ./Space_Scan.sh -r "-s 1 -o -m all" -l domainlist.txt
+sudo ./Space_Scan.sh -r "-s -o -m all" -l domainlist.txt
 ```
 
 - Run masscan and nmap in a certain port in that order.
